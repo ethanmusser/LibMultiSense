@@ -50,7 +50,7 @@ class WIRE_HEADER_ATTRIBS_ ImageMetaHeader {
 public:
 
     static CRL_CONSTEXPR IdType      ID      = ID_DATA_IMAGE_META;
-    static CRL_CONSTEXPR VersionType VERSION = 2;
+    static CRL_CONSTEXPR VersionType VERSION = 3;
 
     static CRL_CONSTEXPR uint32_t HISTOGRAM_CHANNELS = 4; // g0, r, b, g1
     static CRL_CONSTEXPR uint32_t HISTOGRAM_BINS     = 256;
@@ -70,6 +70,7 @@ public:
     uint32_t           timeMicroSeconds;
     int32_t            angle; // microradians
     uint64_t           ptpNanoSeconds;
+    uint32_t           headId;
 
     ImageMetaHeader()
         :
@@ -84,7 +85,8 @@ public:
         timeSeconds(0),
         timeMicroSeconds(0),
         angle(0),
-        ptpNanoSeconds(0) {};
+        ptpNanoSeconds(0),
+        headId(0) {};
 };
 
 #ifndef SENSORPOD_FIRMWARE
@@ -124,6 +126,11 @@ public:
         if (version >= 2)
         {
             message &ptpNanoSeconds;
+        }
+
+        if (version >= 3)
+        {
+            message &headId;
         }
     }
 };

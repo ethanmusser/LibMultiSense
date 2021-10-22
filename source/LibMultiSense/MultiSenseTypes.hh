@@ -177,6 +177,14 @@ static CRL_CONSTEXPR CameraProfile Ground_Surface = (1U<<3);
 /** User would like full resolution images from the aux camera regardless of the requested resolution of the stereo pair.
  *  Warning: This profile will be deprecated in future revisions of the software.*/
 static CRL_CONSTEXPR CameraProfile Full_Res_Aux_Cam = (1U<<4);
+/** User would like to set the active head to remote head 0.*/
+static CRL_CONSTEXPR CameraProfile Active_Head_0 = (1U<<5);
+/** User would like to set the active head to remote head 0.*/
+static CRL_CONSTEXPR CameraProfile Active_Head_1 = (1U<<6);
+/** User would like to set the active head to remote head 0.*/
+static CRL_CONSTEXPR CameraProfile Active_Head_2 = (1U<<7);
+/** User would like to set the active head to remote head 0.*/
+static CRL_CONSTEXPR CameraProfile Active_Head_3 = (1U<<8);
 
 
 /**
