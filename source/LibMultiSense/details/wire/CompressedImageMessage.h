@@ -67,6 +67,7 @@ static CRL_CONSTEXPR VersionType VERSION = 0;
     uint32_t exposure;
     float gain;
     uint32_t compressedDataBufferSize;
+    uint32_t headId;
 
     CompressedImageHeader()
         :
@@ -82,7 +83,8 @@ static CRL_CONSTEXPR VersionType VERSION = 0;
         height(0),
         exposure(0),
         gain(0.0),
-        compressedDataBufferSize(0)
+        compressedDataBufferSize(0),
+        headId(0)
         {};
 };
 
@@ -127,6 +129,11 @@ public:
             message.seek(message.tell() + compressedDataBufferSize);
         }
 
+        if (version >= 2) {
+            message & headId;
+        } else {
+            headId = 0;
+        }
     }
 };
 
