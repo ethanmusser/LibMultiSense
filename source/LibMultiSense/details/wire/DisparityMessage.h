@@ -52,7 +52,7 @@ class WIRE_HEADER_ATTRIBS_ DisparityHeader {
 public:
 
     static CRL_CONSTEXPR IdType      ID      = ID_DATA_DISPARITY;
-    static CRL_CONSTEXPR VersionType VERSION = 1;
+    static CRL_CONSTEXPR VersionType VERSION = 2;
 
     static CRL_CONSTEXPR uint8_t  WIRE_BITS_PER_PIXEL = MULTISENSE_WIRE_BITS_PER_PIXEL;
     static CRL_CONSTEXPR uint8_t  WIRE_BYTE_ALIGNMENT = 3;
@@ -67,7 +67,7 @@ public:
     int64_t  frameId;
     uint16_t width;
     uint16_t height;
-
+    uint32_t headId;
     DisparityHeader()
         :
 #ifdef SENSORPOD_FIRMWARE
@@ -76,7 +76,9 @@ public:
 #endif // SENSORPOD_FIRMWARE
         frameId(0),
         width(0),
-        height(0) {};
+        height(0),
+        headId(0)
+         {};
 };
 
 #ifndef SENSORPOD_FIRMWARE
@@ -114,6 +116,12 @@ public:
 
             dataP = message.peek();
             message.seek(message.tell() + imageSize);
+        }
+
+        if (version >= 2) {
+            message & headId;
+        } else {
+            headId = 0;
         }
     }
 
