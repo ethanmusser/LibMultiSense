@@ -327,6 +327,7 @@ void impl::dispatch(utility::BufferStreamWriter& buffer)
         header.framesPerSecond  = metaP->framesPerSecond;
         header.imageDataP       = image.dataP;
         header.imageLength      = static_cast<uint32_t>(std::ceil(((double) image.bitsPerPixel / 8.0) * image.width * image.height));
+        header.headId           = image.headId;
 
         dispatchImage(buffer, header);
 
@@ -355,6 +356,7 @@ void impl::dispatch(utility::BufferStreamWriter& buffer)
         header.framesPerSecond  = metaP->framesPerSecond;
         header.imageDataP       = image.dataP;
         header.imageLength      = static_cast<uint32_t>(std::ceil(((double) wire::Disparity::API_BITS_PER_PIXEL / 8.0) * image.width * image.height));
+        header.headId           = image.headId;
 
         dispatchImage(buffer, header);
 
@@ -441,6 +443,7 @@ void impl::dispatch(utility::BufferStreamWriter& buffer)
         header.framesPerSecond  = metaP->framesPerSecond;
         header.imageDataP       = image.dataP;
         header.imageLength      = image.compressedDataBufferSize;
+        header.headId           = image.headId;
 
         dispatchCompressedImage(buffer, header);
         break;

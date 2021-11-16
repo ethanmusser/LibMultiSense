@@ -51,7 +51,7 @@ class WIRE_HEADER_ATTRIBS_ CompressedImageHeader {
 public:
 
 static CRL_CONSTEXPR IdType      ID      = ID_DATA_COMPRESSED_IMAGE;
-static CRL_CONSTEXPR VersionType VERSION = 0;
+static CRL_CONSTEXPR VersionType VERSION = 1;
 
 #ifdef SENSORPOD_FIRMWARE
     IdType      id;
@@ -129,7 +129,7 @@ public:
             message.seek(message.tell() + compressedDataBufferSize);
         }
 
-        if (version >= 2) {
+        if (version >= 1) {
             message & headId;
         } else {
             headId = 0;

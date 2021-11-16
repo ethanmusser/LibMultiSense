@@ -466,7 +466,8 @@ public:
     uint32_t    imageLength;
     /** A pointer to the image data */
     const void *imageDataP;
-
+    /** The active remote head if any */
+    uint32_t headId;
     /**
      * Default Constructor
      */
@@ -2469,7 +2470,8 @@ public:
     uint32_t    imageLength;
     /** A pointer to the compressed image data */
     const void *imageDataP;
-
+    /** The active remote head if any */
+    uint32_t headId;
     /**
      * Default Constructor
      */
