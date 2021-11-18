@@ -67,7 +67,8 @@ public:
     int64_t  frameId;
     uint16_t width;
     uint16_t height;
-    uint32_t headId;
+    uint8_t headId;
+    uint16_t pad;
     DisparityHeader()
         :
 #ifdef SENSORPOD_FIRMWARE
@@ -120,6 +121,7 @@ public:
 
         if (version >= 2) {
             message & headId;
+            message & pad;
         } else {
             headId = 0;
         }
