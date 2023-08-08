@@ -1668,4 +1668,11 @@ Status impl::getLocalUdpPort(uint16_t& port)
     port = m_serverSocketPort;
     return Status_Ok;
 }
+
+system::ChannelStatistics impl::getStats()
+{
+    utility::ScopedLock lock(m_statisticsLock);
+    return m_channelStatistics;
+}
+
 }}} // namespaces
