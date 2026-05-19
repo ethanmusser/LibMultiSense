@@ -202,7 +202,7 @@ jobs:
   # more nuanced issues will be caught by the comprehensive set of Ubuntu configurations.
   build-windows:
     needs: build-windows-vcpkg-cache
-    name: "${{ matrix.windows_version }}, modern API, ${{ matrix.compiler }}, ${{ matrix.build_type }}, ${{ matrix.shared_libs && 'shared' || 'static' }}, full, python"
+    name: "${{ matrix.windows_version }}, ${{ matrix.legacy_api && 'legacy API' || 'modern API' }}, ${{ matrix.compiler }}, ${{ matrix.build_type }}, ${{ matrix.shared_libs && 'shared' || 'static' }}, full, python"
     strategy:
       fail-fast: false
       matrix:
@@ -224,6 +224,16 @@ jobs:
             build_json_serialization: true
             build_opencv: true
             python_bindings: true
+
+          # Build one representative legacy API Windows configuration.
+          - windows_version: windows-2022
+            compiler: msvc
+            build_type: Release
+            shared_libs: true
+            legacy_api: true
+            build_json_serialization: false
+            build_opencv: false
+            python_bindings: false
 
     uses: ./.github/workflows/build-windows.yml
     with:
