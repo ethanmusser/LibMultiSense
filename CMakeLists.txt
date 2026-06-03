@@ -13,7 +13,7 @@ if(WIN32 AND DEFINED ENV{VCPKG_ROOT})
     set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "vcpkg toolchain file")
 endif()
 
-set(version "7.8.0")
+set(version "7.9.0")
 set(CPACK_PACKAGE_VERSION ${version})
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
@@ -25,7 +25,7 @@ project(LibMultiSense
 
 include (CheckCXXSourceCompiles)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if(MSVC)
     string (REGEX REPLACE "/W3" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     string (REGEX REPLACE "/W3" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     add_compile_options(/WX)
@@ -35,7 +35,7 @@ else()
     add_compile_options(-Wall -Wextra -Werror -Wpedantic -Wno-variadic-macros)
 endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+if ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang") AND NOT MSVC)
     #
     # Fix warnings with __VA__OPT__ when we port to c++2a
     # https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
@@ -73,8 +73,7 @@ endif()
 #
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     message(STATUS "Selecting default build type: Release")
-    #set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type (default: Release)" FORCE)
-    set(CMAKE_BUILD_TYPE "DebugWithRelInfo" CACHE STRING "Build type (default: DebugWithRelInfo)" FORCE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type (default: Release)" FORCE)
 endif ()
 
 #
@@ -128,7 +127,11 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 # Setup optional dependencies
 #
 if (BUILD_OPENCV)
-   find_package(OpenCV QUIET)
+   set(OPENCV_COMPONENTS core features2d imgcodecs)
+   if (MULTISENSE_BUILD_UTILITIES)
+      list(APPEND OPENCV_COMPONENTS highgui imgproc)
+   endif()
+   find_package(OpenCV QUIET COMPONENTS ${OPENCV_COMPONENTS})
 
   if(OpenCV_FOUND)
     message(STATUS "OpenCV found. Enabling OpenCV-specific code.")

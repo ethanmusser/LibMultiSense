@@ -47,16 +47,22 @@
 #include <tuple>
 #include <vector>
 
-#ifdef HAVE_OPENCV
+#ifdef MULTISENSE_HAVE_OPENCV
 #include <opencv2/core/mat.hpp>
 #endif
 
 #if !defined(MULTISENSE_API)
-#if defined (_MSC_VER)
-#define MULTISENSE_API __declspec(dllexport)
-#else
-#define MULTISENSE_API
-#endif
+#  if defined (_MSC_VER)
+#    if defined (MultiSense_STATIC)
+#      define MULTISENSE_API
+#    elif defined (MultiSense_EXPORTS)
+#      define MULTISENSE_API __declspec(dllexport)
+#    else
+#      define MULTISENSE_API __declspec(dllimport)
+#    endif
+#  else
+#    define MULTISENSE_API
+#  endif
 #endif
 
 
@@ -289,7 +295,7 @@ struct Image
         return std::nullopt;
     }
 
-#ifdef HAVE_OPENCV
+#ifdef MULTISENSE_HAVE_OPENCV
     ///
     /// @brief Transform a image into a cv::Mat object if the user wants to build OpenCV utilities
     ///        The cv::Mat returned here wraps the underlying image data pointer associated with
@@ -297,7 +303,7 @@ struct Image
     ///        the corresponding cv::Mat, you will need to `clone` the cv::Mat creating an internal copy
     ///        of all the data
     ///
-    cv::Mat cv_mat() const;
+    MULTISENSE_API cv::Mat cv_mat() const;
 #endif
 };
 
@@ -392,11 +398,11 @@ struct FeatureMessage
     ///
     std::vector<uint8_t> descriptors{};
 
-#ifdef HAVE_OPENCV
+#ifdef MULTISENSE_HAVE_OPENCV
     ///
     /// @brief Convert keypoints to native OpenCV keypoints
     ///
-    std::vector<cv::KeyPoint> cv_keypoints() const;
+    MULTISENSE_API std::vector<cv::KeyPoint> cv_keypoints() const;
 
     ///
     /// @brief Convert descriptors to a native OpenCV Mat.
@@ -405,7 +411,7 @@ struct FeatureMessage
     ///        still using the corresponding cv::Mat, you will need to `clone` the cv::Mat creating an internal
     ///        copy of all the data
     ///
-    cv::Mat cv_descriptors() const;
+    MULTISENSE_API cv::Mat cv_descriptors() const;
 #endif
 };
 
