@@ -1,4 +1,4 @@
-if(BUILD_OPENCV AND OpenCV_FOUND)
+if(MULTISENSE_OPENCV_ENABLED)
     add_executable(FeatureDetectorUtility FeatureDetectorUtility.cc)
 
     target_link_libraries (FeatureDetectorUtility
