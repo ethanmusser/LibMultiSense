@@ -46,7 +46,7 @@ target_include_directories(MultiSense
         PUBLIC $<INSTALL_INTERFACE:include>
         PRIVATE ${MULTISENSE_SHARED_INCLUDE_DIR})
 
-if (MULTISENSE_OPENCV_ENABLED)
+if (BUILD_OPENCV)
     target_compile_definitions(MultiSense PUBLIC MULTISENSE_HAVE_OPENCV)
 
     target_link_libraries(MultiSense

@@ -47,8 +47,7 @@ option(BUILD_LEGACY_API "Build the legacy MultiSense API. Defaults to On for bac
 option(MULTISENSE_BUILD_UTILITIES "Build MultiSense utility applications. Defaults to ON for backwards compatibility." ON)
 option(BUILD_SHARED_LIBS "Build LibMultiSense as a shared library. Defaults to ON." ON)
 option(BUILD_TESTS "Build LibMultiSense GTests. Defaults to OFF." OFF)
-option(BUILD_OPENCV "Use OpenCV if found on the host system" OFF)
-option(MULTISENSE_REQUIRE_OPENCV "Fail configuration when BUILD_OPENCV is ON but OpenCV is unavailable." OFF)
+option(BUILD_OPENCV "Build OpenCV-dependent functionality. Defaults to OFF." OFF)
 option(BUILD_PYTHON_BINDINGS "Build Python bindings with pybind11." OFF)
 option(BUILD_JSON_SERIALIZATION "Build json type serialization with nlohmann json." OFF)
 option(ENABLE_ASAN "Build with AddressSanitizer instrumentation." OFF)
@@ -127,37 +126,31 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 #
 # Setup optional dependencies
 #
-set(MULTISENSE_OPENCV_ENABLED OFF)
-set(MULTISENSE_OPENCV_FEATURES_COMPONENT "")
-if (BUILD_OPENCV)
-    # OpenCV 5 renamed the features2d component and target to features. Discover
-    # core first so that the remaining component list can follow the installed
-    # OpenCV major version while retaining OpenCV 4 compatibility.
-    find_package(OpenCV QUIET COMPONENTS core)
-    if (OpenCV_FOUND)
-        if (OpenCV_VERSION_MAJOR GREATER_EQUAL 5)
-            set(MULTISENSE_OPENCV_FEATURES_COMPONENT features)
-        else()
-            set(MULTISENSE_OPENCV_FEATURES_COMPONENT features2d)
-        endif()
-
-        set(OPENCV_COMPONENTS core ${MULTISENSE_OPENCV_FEATURES_COMPONENT} imgcodecs)
-        if (MULTISENSE_BUILD_UTILITIES)
-            list(APPEND OPENCV_COMPONENTS highgui imgproc)
-        endif()
-        find_package(OpenCV QUIET COMPONENTS ${OPENCV_COMPONENTS})
-    endif()
-
-    if (OpenCV_FOUND)
-        set(MULTISENSE_OPENCV_ENABLED ON)
-        message(STATUS "OpenCV ${OpenCV_VERSION} found. Enabling OpenCV-specific code.")
-    elseif (MULTISENSE_REQUIRE_OPENCV)
-        message(FATAL_ERROR "BUILD_OPENCV is ON, but the required OpenCV components were not found.")
+if(BUILD_OPENCV)
+    # OpenCV 5 renamed the `features2d` component/target to `features`. Find the
+    # `core` component first to determine the installed OpenCV major version,
+    # then select the appropriate features component name based on that.
+    find_package(OpenCV REQUIRED COMPONENTS core)
+    if(OpenCV_VERSION_MAJOR GREATER_EQUAL 5)
+        set(MULTISENSE_OPENCV_FEATURES_COMPONENT features)
     else()
-        message(STATUS "OpenCV not found. Building without OpenCV support.")
+        set(MULTISENSE_OPENCV_FEATURES_COMPONENT features2d)
     endif()
-elseif (MULTISENSE_REQUIRE_OPENCV)
-    message(FATAL_ERROR "MULTISENSE_REQUIRE_OPENCV requires BUILD_OPENCV to be ON.")
+
+    set(MULTISENSE_OPENCV_COMPONENTS
+        core
+        imgcodecs
+        ${MULTISENSE_OPENCV_FEATURES_COMPONENT}
+    )
+    if(MULTISENSE_BUILD_UTILITIES)
+        list(APPEND MULTISENSE_OPENCV_COMPONENTS highgui imgproc)
+    endif()
+    find_package(OpenCV REQUIRED COMPONENTS ${MULTISENSE_OPENCV_COMPONENTS})
+
+    message(
+        STATUS
+        "OpenCV ${OpenCV_VERSION} found. Enabling OpenCV-specific code."
+    )
 endif()
 
 if (BUILD_JSON_SERIALIZATION)

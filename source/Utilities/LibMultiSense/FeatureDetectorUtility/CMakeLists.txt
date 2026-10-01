@@ -1,4 +1,4 @@
-if(MULTISENSE_OPENCV_ENABLED)
+if(BUILD_OPENCV)
     add_executable(FeatureDetectorUtility FeatureDetectorUtility.cc)
 
     target_link_libraries (FeatureDetectorUtility
@@ -8,5 +8,5 @@ if(MULTISENSE_OPENCV_ENABLED)
 
     install(TARGETS FeatureDetectorUtility RUNTIME DESTINATION "bin")
 else()
-    message(STATUS "Missing OpenCV or BUILD_OPENCV is OFF. Not building the C++ FeatureDetectorUtility")
+    message(STATUS "BUILD_OPENCV is OFF. Not building the C++ FeatureDetectorUtility")
 endif()
